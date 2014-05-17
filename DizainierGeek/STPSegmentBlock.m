@@ -17,6 +17,22 @@
 
 @implementation STPSegmentBlock
 
+- (id)initWithItems:(NSArray *)items {
+    self = [super init];
+    if(self){
+        titleLabel = [[UILabel alloc] init];
+        [titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [self addSubview:titleLabel];
+        
+        valueSegment = [[UISegmentedControl alloc] initWithItems:items];
+        [self addSubview:valueSegment];
+        
+        [valueSegment release];
+        [titleLabel release];
+    }
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -24,6 +40,24 @@
         // Initialization code
     }
     return self;
+}
+
+-(void)setTitle:(NSString *)title {
+    [titleLabel setText:title];
+}
+
+-(void)setColor:(UIColor *)color {
+    [titleLabel setTextColor:color];
+    [valueSegment setTintColor:color];
+}
+
+-(void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [titleLabel setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height / 3)];
+    [valueSegment setFrame:CGRectMake(0,
+                                      [titleLabel bounds].size.height + 5,
+                                      frame.size.width,
+                                      frame.size.height - [titleLabel bounds].size.height)];
 }
 
 

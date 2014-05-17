@@ -42,6 +42,9 @@
     
     if (self) {
         
+        NSArray *deciArray = [NSArray arrayWithObjects: @"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9", nil];
+        
+        
         container = [[UIView alloc] init];
         
         geekSwitch = [[UISwitch alloc] init];
@@ -79,15 +82,22 @@
         [totalSlider setValue:val];
         [container addSubview:totalSlider];
         
+        deci2SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
+        [deci2SegBlock setTitle:@"Dizaines"];
+        [container addSubview:deci2SegBlock];
+        
+        deci1SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
+        [deci1SegBlock setTitle:@"Unités"];
+        [container addSubview:deci1SegBlock];
+        
         [self addSubview:container];
         
         //clean memory references
         [geekSwitch release];
-        [geekLabel release];
-        [deciTotalLabel release];
-        [hexaTotalLabel release];
+        [geekLabel release]; [deciTotalLabel release]; [hexaTotalLabel release];
         [resetButton release];
         [totalStepper release];
+        [deci1SegBlock release]; [deci2SegBlock release];
         
         
         [self drawWithOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
@@ -97,14 +107,23 @@
 }
 
 -(void) drawWithOrientation:(UIInterfaceOrientation)orientation {
+
+    if(orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight){
+        [container setFrame:CGRectMake([self bounds].origin.x + margin,
+                                       [self bounds].origin.y + margin,
+                                       [self bounds].size.height - 2 * margin,
+                                       [self bounds].size.width - 2 * margin)];
+        
+    } else {
+        [container setFrame:CGRectMake([self bounds].origin.x + margin,
+                                       [self bounds].origin.y + margin,
+                                       [self bounds].size.width - 2 * margin,
+                                       [self bounds].size.height - 2 * margin)];
+        
+    }
     
-    int gap = 20;
-    int lineHeight = 20;
-    
-    [container setFrame:CGRectMake([self bounds].origin.x + margin,
-                                   [self bounds].origin.y + margin,
-                                   [self bounds].size.width - 2 * margin,
-                                   [self bounds].size.height - 2 * margin)];
+    int gap = [container bounds].size.height / 30;
+    int lineHeight = [container bounds].size.height / 15;
     
     //top stick elements
     [totalStepper setFrame:CGRectMake(0,
@@ -119,10 +138,16 @@
                                    0,
                                    [container bounds].size.width - [geekSwitch frame].size.width - [totalStepper frame].size.width - 2 * gap,
                                    [geekSwitch bounds].size.height)];
+    [deci2SegBlock setFrame:CGRectMake(0,
+                                       [totalStepper frame].origin.y + [totalStepper frame].size.height + gap,
+                                       [container bounds].size.width, 2*lineHeight)];
+    [deci1SegBlock setFrame:CGRectMake(0,
+                                       [deci2SegBlock frame].origin.y + [deci2SegBlock frame].size.height + gap,
+                                       [container bounds].size.width, 2*lineHeight)];
     
     
     //bottom stick elements
-    [resetButton setFrame:CGRectMake( [container bounds].size.width / 4,
+    [resetButton setFrame:CGRectMake([container bounds].size.width / 4,
                                      [container bounds].size.height - 30,
                                      [container bounds].size.width / 2,
                                      lineHeight)];
@@ -138,6 +163,8 @@
                                         [hexaTotalLabel frame].origin.y - lineHeight - gap,
                                         [container bounds].size.width,
                                         lineHeight)];
+    
+    [hexaTotalLabel setText:[NSString stringWithFormat:@"%f",[container frame].size.width]];
     
 }
 

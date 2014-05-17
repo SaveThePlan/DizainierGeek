@@ -10,5 +10,8 @@
 
 @interface STPSegmentBlock : UIView
 
+- (id)initWithItems:(NSArray *)items;
+-(void)setTitle:(NSString*)title;
+-(void)setColor:(UIColor*)color;
 
 @end
