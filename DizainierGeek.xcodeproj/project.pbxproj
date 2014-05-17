@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE9D12351927BA7F00FC73CA /* STPSegmentBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		CE9D123B1927BB3700FC73CA /* STPDizainierView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9D123A1927BB3700FC73CA /* STPDizainierView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CED658B01927B2E300AAF623 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658AF1927B2E300AAF623 /* Foundation.framework */; };
 		CED658B21927B2E300AAF623 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658B11927B2E300AAF623 /* CoreGraphics.framework */; };
 		CED658B41927B2E300AAF623 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658B31927B2E300AAF623 /* UIKit.framework */; };
@@ -15,7 +17,7 @@
 		CED658C01927B2E300AAF623 /* STPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CED658BF1927B2E300AAF623 /* STPAppDelegate.m */; };
 		CED658C31927B2E300AAF623 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CED658C11927B2E300AAF623 /* Main_iPhone.storyboard */; };
 		CED658C61927B2E300AAF623 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CED658C41927B2E300AAF623 /* Main_iPad.storyboard */; };
-		CED658C91927B2E300AAF623 /* STPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CED658C81927B2E300AAF623 /* STPViewController.m */; };
+		CED658C91927B2E300AAF623 /* STPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CED658C81927B2E300AAF623 /* STPViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CED658CB1927B2E300AAF623 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CED658CA1927B2E300AAF623 /* Images.xcassets */; };
 		CED658D21927B2E300AAF623 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658D11927B2E300AAF623 /* XCTest.framework */; };
 		CED658D31927B2E300AAF623 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658AF1927B2E300AAF623 /* Foundation.framework */; };
@@ -35,6 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE9D12331927BA7F00FC73CA /* STPSegmentBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPSegmentBlock.h; sourceTree = "<group>"; };
+		CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STPSegmentBlock.m; sourceTree = "<group>"; };
+		CE9D12391927BB3700FC73CA /* STPDizainierView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPDizainierView.h; sourceTree = "<group>"; };
+		CE9D123A1927BB3700FC73CA /* STPDizainierView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STPDizainierView.m; sourceTree = "<group>"; };
 		CED658AC1927B2E300AAF623 /* DizainierGeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DizainierGeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CED658AF1927B2E300AAF623 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CED658B11927B2E300AAF623 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -114,6 +120,10 @@
 		CED658B51927B2E300AAF623 /* DizainierGeek */ = {
 			isa = PBXGroup;
 			children = (
+				CE9D12331927BA7F00FC73CA /* STPSegmentBlock.h */,
+				CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */,
+				CE9D12391927BB3700FC73CA /* STPDizainierView.h */,
+				CE9D123A1927BB3700FC73CA /* STPDizainierView.m */,
 				CED658BE1927B2E300AAF623 /* STPAppDelegate.h */,
 				CED658BF1927B2E300AAF623 /* STPAppDelegate.m */,
 				CED658C11927B2E300AAF623 /* Main_iPhone.storyboard */,
@@ -254,6 +264,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9D12351927BA7F00FC73CA /* STPSegmentBlock.m in Sources */,
+				CE9D123B1927BB3700FC73CA /* STPDizainierView.m in Sources */,
 				CED658C01927B2E300AAF623 /* STPAppDelegate.m in Sources */,
 				CED658BC1927B2E300AAF623 /* main.m in Sources */,
 				CED658C91927B2E300AAF623 /* STPViewController.m in Sources */,
@@ -394,6 +406,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DizainierGeek/DizainierGeek-Prefix.pch";
 				INFOPLIST_FILE = "DizainierGeek/DizainierGeek-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -407,6 +420,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DizainierGeek/DizainierGeek-Prefix.pch";
 				INFOPLIST_FILE = "DizainierGeek/DizainierGeek-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -471,6 +485,7 @@
 				CED658E31927B2E300AAF623 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CED658E41927B2E300AAF623 /* Build configuration list for PBXNativeTarget "DizainierGeekTests" */ = {
 			isa = XCConfigurationList;
@@ -479,6 +494,7 @@
 				CED658E61927B2E300AAF623 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

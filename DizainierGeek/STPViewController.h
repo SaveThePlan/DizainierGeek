@@ -10,4 +10,11 @@
 
 @interface STPViewController : UIViewController
 
+- (void)deciSegmentAction;
+- (void)hexaSegmentAction;
+- (void)stepperAction;
+- (void)sliderAction;
+- (void)switchGeek;
+- (void)resetTotal;
+
 @end
