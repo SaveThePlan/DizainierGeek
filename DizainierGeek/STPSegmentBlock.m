@@ -33,14 +33,17 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (void)addTarget:(id)target action:(SEL)action{
+    [valueSegment addTarget:target action:action forControlEvents:UIControlEventValueChanged];
 }
+
+-(NSInteger)segmentIndex{
+    return [valueSegment selectedSegmentIndex];
+}
+-(void)setSegmentIndex:(NSInteger)index {
+    [valueSegment setSelectedSegmentIndex:index];
+}
+
 
 -(void)setTitle:(NSString *)title {
     [titleLabel setText:title];

@@ -13,5 +13,9 @@
 - (id)initWithItems:(NSArray *)items;
 -(void)setTitle:(NSString*)title;
 -(void)setColor:(UIColor*)color;
+- (void)addTarget:(id)target action:(SEL)action;
+-(NSInteger)segmentIndex;
+-(void)setSegmentIndex:(NSInteger)index;
+
 
 @end

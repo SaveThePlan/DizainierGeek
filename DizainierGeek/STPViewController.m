@@ -29,7 +29,11 @@
     total = minVal = 0;
     maxVal = 99;
     
-    mainView = [[STPDizainierView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+    mainView = [[STPDizainierView alloc] initWithFrame: [[UIScreen mainScreen] bounds]
+                                        andValue:0];
+    [mainView setController:self];
+    [mainView setMinVal:minVal];
+    [mainView setMaxVal:maxVal];
     [[self view] addSubview:mainView];
     [mainView release];
 }
@@ -48,29 +52,16 @@
     [mainView drawWithOrientation:toInterfaceOrientation];
 }
 
-- (void)deciSegmentAction{
-    
+
+-(void)controlTotal:(int)val {
+    if(val >= minVal && val <= maxVal){
+        total = val;
+    } else {
+        total = (val > minVal)? maxVal : minVal;
+    }
+    [mainView setValue:total];
 }
 
-- (void)hexaSegmentAction{
-    
-}
-
-- (void)stepperAction{
-    
-}
-
-- (void)sliderAction{
-    
-}
-
-- (void)switchGeek{
-    
-}
-
-- (void)resetTotal{
-    
-}
 
 
 @end
