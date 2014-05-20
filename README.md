@@ -30,3 +30,13 @@ Un switch "mode geek" permet de convertir l'affichage en hexadecimal.
 Le mode geek provoque l'affichage de deux segmented supplémentaires qui permettent de saisir un nombre en hexadecimal, il correspondent respectivement aux rangs 1 et 2 du nombre saisi.  
 De plus, l'affichage du résultat est dupliqué, une première fois en décimal, une seconde fois en hexadécimal.  
 L'application est donc un mini convertisseur
+
+
+## Interface utilisateur #
+
+Les interfaces sont entièrement réalisé via le code (pas d'InterfaceBuilder).  
+Les positionnement sont fait en utilisant les contraintes et le système *autolayout* disponible pour **iOS6+**. Les changements d'orientations, tuot comme le switch *mode geek*, provoquent la modification des contraintes de l'interface et l'animation des modifications.
+
+
+
+
