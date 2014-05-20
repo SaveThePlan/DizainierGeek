@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE905BDB192A752000C9715F /* STPLayoutConstraintBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = CE905BDA192A752000C9715F /* STPLayoutConstraintBuilder.m */; };
 		CE9D12351927BA7F00FC73CA /* STPSegmentBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CE9D123B1927BB3700FC73CA /* STPDizainierView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9D123A1927BB3700FC73CA /* STPDizainierView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		CED658B01927B2E300AAF623 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED658AF1927B2E300AAF623 /* Foundation.framework */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE905BD9192A752000C9715F /* STPLayoutConstraintBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPLayoutConstraintBuilder.h; sourceTree = "<group>"; };
+		CE905BDA192A752000C9715F /* STPLayoutConstraintBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STPLayoutConstraintBuilder.m; sourceTree = "<group>"; };
 		CE9D12331927BA7F00FC73CA /* STPSegmentBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPSegmentBlock.h; sourceTree = "<group>"; };
 		CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STPSegmentBlock.m; sourceTree = "<group>"; };
 		CE9D12391927BB3700FC73CA /* STPDizainierView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPDizainierView.h; sourceTree = "<group>"; };
@@ -122,6 +125,8 @@
 			children = (
 				CE9D12331927BA7F00FC73CA /* STPSegmentBlock.h */,
 				CE9D12341927BA7F00FC73CA /* STPSegmentBlock.m */,
+				CE905BD9192A752000C9715F /* STPLayoutConstraintBuilder.h */,
+				CE905BDA192A752000C9715F /* STPLayoutConstraintBuilder.m */,
 				CE9D12391927BB3700FC73CA /* STPDizainierView.h */,
 				CE9D123A1927BB3700FC73CA /* STPDizainierView.m */,
 				CED658BE1927B2E300AAF623 /* STPAppDelegate.h */,
@@ -264,6 +269,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE905BDB192A752000C9715F /* STPLayoutConstraintBuilder.m in Sources */,
 				CE9D12351927BA7F00FC73CA /* STPSegmentBlock.m in Sources */,
 				CE9D123B1927BB3700FC73CA /* STPDizainierView.m in Sources */,
 				CED658C01927B2E300AAF623 /* STPAppDelegate.m in Sources */,

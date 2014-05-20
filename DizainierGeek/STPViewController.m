@@ -29,11 +29,9 @@
     total = minVal = 0;
     maxVal = 99;
     
-    mainView = [[STPDizainierView alloc] initWithFrame: [[UIScreen mainScreen] bounds]
-                                        andValue:0];
+    mainView = [[STPDizainierView alloc] initWithValue:0];
     [mainView setController:self];
-    [mainView setMinVal:minVal];
-    [mainView setMaxVal:maxVal];
+    [mainView setMin:0 andMax:99];
     [[self view] addSubview:mainView];
     [mainView release];
 }
@@ -60,6 +58,12 @@
         total = (val > minVal)? maxVal : minVal;
     }
     [mainView setValue:total];
+}
+
+
+-(void)dealloc {
+    [mainView release];
+    [super dealloc];
 }
 
 

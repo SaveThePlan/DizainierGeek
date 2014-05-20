@@ -8,265 +8,480 @@
 
 #import "STPDizainierView.h"
 #import "STPSegmentBlock.h"
+#import "STPLayoutConstraintBuilder.h"
 
 @interface STPDizainierView(){
-    UIView *container;
+    
+    UIColor *deciColor;
+    UIColor *hexaColor;
+    UIColor *lightColor;
+    
     UIStepper *totalStepper;
-    UISlider *totalSlider;
     UISwitch *geekSwitch;
+    
+    STPSegmentBlock *deci1SegBlock, *deci2SegBlock,
+                    *hexa1SegBlock, *hexa2SegBlock;
+    
+    UISlider *totalSlider;
     UILabel *geekLabel, *deciTotalLabel, *hexaTotalLabel;
     UIButton *resetButton;
     
-    STPSegmentBlock *deci1SegBlock,
-                    *deci2SegBlock,
-                    *hexa1SegBlock,
-                    *hexa2SegBlock;
-    
-    int margin;
-    int value;
     BOOL isIpad;
+    BOOL isLandscape;
+    BOOL isGeek;
+    
+    int gap;
+    int lineHeight;
+    
+    NSMutableArray *flexConstraints;
+    
 }
 
 @end
 
 @implementation STPDizainierView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    return [self initWithFrame:frame andValue:0];
-}
-
-- (id)initWithFrame:(CGRect)frame andValue:(int)val {
+-(id)init {
     
     isIpad = ( [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad );
     
-    margin = 20;
+    self = [super init];
     
-    self = [super initWithFrame:frame];
-    
-    if (self) {
+    if(self){
+        gap = (isIpad)? 20: 8;
         
-        NSArray *deciArray = [NSArray arrayWithObjects: @"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9", nil];
-        NSArray *hexaArray = [NSArray arrayWithObjects: @"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9", @"A", @"B", @"C", @"D", @"E", @"F", nil];
-        
-        
-        container = [[UIView alloc] init];
-        
-        geekSwitch = [[UISwitch alloc] init];
-        [geekSwitch setOn:NO];
-        [geekSwitch setOnTintColor:[UIColor purpleColor]];
-        [geekSwitch addTarget:self action:@selector(switchGeek)
-             forControlEvents:UIControlEventValueChanged];
-        [container addSubview:geekSwitch];
-
-        geekLabel = [[UILabel alloc] init];
-        [geekLabel setText:@"mode geek"];
-        [geekLabel setTextColor:[UIColor lightGrayColor]];
-        [geekLabel setTextAlignment:NSTextAlignmentRight];
-        [container addSubview:geekLabel];
-        
-        deciTotalLabel = [[UILabel alloc] init];
-        [deciTotalLabel setTextAlignment:NSTextAlignmentCenter];
-        [container addSubview:deciTotalLabel];
-        
-        hexaTotalLabel = [[UILabel alloc] init];
-        [hexaTotalLabel setTextAlignment:NSTextAlignmentCenter];
-        [container addSubview:hexaTotalLabel];
-        
-        resetButton = [ [UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-        [resetButton setTitle:@"RESET" forState:UIControlStateNormal];
-        [resetButton addTarget:self
-                        action:@selector(resetTotal)
-                        forControlEvents:UIControlEventTouchDown];
-        [container addSubview:resetButton];
-        
-        totalStepper = [[UIStepper alloc] init];
-        [totalStepper setMinimumValue:0];
-        [totalStepper setMaximumValue:1];
-        [totalStepper addTarget:self
-                        action:@selector(stepperAction)
-                        forControlEvents:UIControlEventValueChanged];
-        [container addSubview:totalStepper];
-        
-        totalSlider = [[UISlider alloc] init];
-        [totalSlider setMinimumValue:0];
-        [totalSlider setMaximumValue:1];
-        [totalSlider addTarget:self
-                         action:@selector(sliderAction)
-               forControlEvents:UIControlEventValueChanged];
-        [container addSubview:totalSlider];
-        
-        deci2SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
-        [deci2SegBlock setTitle:@"Dizaines"];
-        [deci2SegBlock setColor:[UIColor blueColor]];
-        [deci2SegBlock addTarget:self action:@selector(deciSegmentAction)];
-        [container addSubview:deci2SegBlock];
-        
-        deci1SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
-        [deci1SegBlock setTitle:@"Unités"];
-        [deci1SegBlock setColor:[UIColor blueColor]];
-        [deci1SegBlock addTarget:self action:@selector(deciSegmentAction)];
-        [container addSubview:deci1SegBlock];
-        
-        hexa2SegBlock = [[STPSegmentBlock alloc] initWithItems:hexaArray];
-        [hexa2SegBlock setTitle:@"Rang 2 hexa"];
-        [hexa2SegBlock setColor:[UIColor purpleColor]];
-        [hexa2SegBlock addTarget:self action:@selector(hexaSegmentAction)];
-        [container addSubview:hexa2SegBlock];
-        
-        hexa1SegBlock = [[STPSegmentBlock alloc] initWithItems:hexaArray];
-        [hexa1SegBlock setTitle:@"Rang 1 hexa"];
-        [hexa1SegBlock setColor:[UIColor purpleColor]];
-        [hexa1SegBlock addTarget:self action:@selector(hexaSegmentAction)];
-        [container addSubview:hexa1SegBlock];
+        //COLORS
+        deciColor = [UIColor blueColor];
+        hexaColor = [UIColor purpleColor];
+        lightColor = [UIColor lightGrayColor];
         
         
-        [self addSubview:container];
+        //setup elements
+        [self setupTotalStepper];
+        [self setupGeekBlock];
+        [self setupResetButton];
+        [self setupTotalSlider];
+        [self setupTotalBlock];
+        [self setupSegmentsBlocks];
         
-        //clean memory references
-        [geekSwitch release];
-        [geekLabel release]; [deciTotalLabel release]; [hexaTotalLabel release];
-        [resetButton release];
-        [totalStepper release];
-        [deci1SegBlock release]; [deci2SegBlock release];
-        [hexa1SegBlock release]; [hexa2SegBlock release];
+        //add fix constraints
+        [self addConstraints:[self constraintsFixForTotalStepper]];//totalStepper
+        [self addConstraints:[self constraintsFixForGeekBlock]];//geekBlock
+        [self addConstraints:[self constraintsFixForResetButton]];//resetButton
+        [self addConstraints:[self constraintsFixForTotalSlider]];//totalSlider
+        [self addConstraints:[self constraintsFixForSegments]];//segments
         
         
-        [self setValue:val];
+        //flex constraints init
+        flexConstraints = [[NSMutableArray alloc]init];
+        
         [self drawWithOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
     }
-    
     return self;
 }
 
--(void)setMinVal:(int)val{
-    [totalSlider setMinimumValue:val];
-    [totalStepper setMinimumValue:val];
+- (id)initWithValue:(int)val {
+    self = [self init];
+    
+    if (self) {
+        [self setValue:val];
+    }
+
+    return self;
 }
--(void)setMaxVal:(int)val {
-    [totalStepper setMaximumValue:val];
-    [totalSlider setMaximumValue:val];
+
+
+/* ---------- SETUP ELEMENTS ---------- */
+-(void)setupTotalStepper {
+    
+    totalStepper = [[UIStepper alloc] init];
+    
+    [totalStepper setTintColor:deciColor];
+    [totalStepper setMinimumValue:0];
+    [totalStepper setMaximumValue:1];
+    
+    [totalStepper addTarget:self action:@selector(stepperAction)
+           forControlEvents:UIControlEventValueChanged];
+    
+    [totalStepper setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:totalStepper];
+    [totalStepper release];
+}
+
+-(void)setupGeekBlock {
+    //switch
+    geekSwitch = [[UISwitch alloc] init];
+    
+    [geekSwitch setOnTintColor:hexaColor];
+    [geekSwitch setOn:NO];
+    
+    [geekSwitch addTarget:self action:@selector(switchGeek)
+         forControlEvents:UIControlEventValueChanged];
+    
+    [geekSwitch setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:geekSwitch];
+    [geekSwitch release];
+    
+    
+    //label
+    geekLabel = [[UILabel alloc] init];
+    
+    [geekLabel setText:@"mode geek"];
+    [geekLabel setTextAlignment:NSTextAlignmentRight];
+    [geekLabel setTextColor:lightColor];
+    
+    [geekLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:geekLabel];
+    [geekLabel release];
+}
+
+
+-(void)setupResetButton {
+    resetButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    
+    [resetButton setTitle:@"RESET" forState:UIControlStateNormal];
+    [resetButton setTitleColor:deciColor forState:UIControlStateNormal];
+    
+    [resetButton addTarget:self
+                    action:@selector(resetTotal)
+          forControlEvents:UIControlEventTouchDown];
+    
+    [resetButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:resetButton];
+}
+
+-(void)setupTotalSlider {
+    totalSlider = [[UISlider alloc] init];
+    
+    [totalSlider setMinimumValue:0];
+    [totalSlider setMaximumValue:1];
+    
+    [totalSlider addTarget:self
+                    action:@selector(sliderAction)
+          forControlEvents:UIControlEventValueChanged];
+    
+    [totalSlider setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:totalSlider];
+    [totalSlider release];
+}
+
+-(void)setupTotalBlock{
+    //deci
+    deciTotalLabel = [[UILabel alloc] init];
+    
+    [deciTotalLabel setTextAlignment:NSTextAlignmentCenter];
+    [deciTotalLabel setTextColor:deciColor];
+    
+    [deciTotalLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:deciTotalLabel];
+    [deciTotalLabel release];
+
+    
+    //hexa
+    hexaTotalLabel = [[UILabel alloc] init];
+
+    [hexaTotalLabel setTextAlignment:NSTextAlignmentCenter];
+    [hexaTotalLabel setTextColor:hexaColor];
+    
+    [hexaTotalLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:hexaTotalLabel];
+    [hexaTotalLabel release];
+}
+
+-(void)setupSegmentsBlocks {
+    NSArray *deciArray = [[NSArray arrayWithObjects:@"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", nil] retain];
+    NSArray *hexaArray = [[NSArray arrayWithObjects:@"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"A", @"B", @"C", @"D", @"E", @"F", nil] retain];
+    
+    //deci rg1
+    deci1SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
+    
+    [deci1SegBlock setColor:deciColor];
+    [deci1SegBlock setTitle:@"Unités"];
+    [deci1SegBlock addTarget:self action:@selector(deciSegmentAction)];
+    
+    [deci1SegBlock setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:deci1SegBlock];
+    [deci1SegBlock release];
+    
+    
+    //deci rg2
+    deci2SegBlock = [[STPSegmentBlock alloc] initWithItems:deciArray];
+    
+    [deci2SegBlock setColor:deciColor];
+    [deci2SegBlock setTitle:@"Dizaines"];
+    [deci2SegBlock addTarget:self action:@selector(deciSegmentAction)];
+    
+    [deci2SegBlock setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:deci2SegBlock];
+    [deci2SegBlock release];
+    
+    //hexa rg1
+    hexa1SegBlock = [[STPSegmentBlock alloc] initWithItems:hexaArray];
+    
+    [hexa1SegBlock setColor:hexaColor];
+    [hexa1SegBlock setTitle:@"RANG 1"];
+    [hexa1SegBlock addTarget:self action:@selector(hexaSegmentAction)];
+    
+    [hexa1SegBlock setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:hexa1SegBlock];
+    [hexa1SegBlock release];
+    
+    //hexa rg2
+    hexa2SegBlock = [[STPSegmentBlock alloc] initWithItems:hexaArray];
+    
+    [hexa2SegBlock setColor:hexaColor];
+    [hexa2SegBlock setTitle:@"RANG 2"];
+    [hexa2SegBlock addTarget:self action:@selector(hexaSegmentAction)];
+    
+    [hexa2SegBlock setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addSubview:hexa2SegBlock];
+    [hexa2SegBlock release];
+    
+    
+    [deciArray release];
+    [hexaArray release];
+}
+/* ---------- END SETUP ELEMENTS ---------- */
+
+
+
+/* ---------- VALUES ---------- */
+-(void)setMin:(int)min andMax:(int)max {
+    [totalStepper setMinimumValue:min];
+    [totalStepper setMaximumValue:max];
+    [totalSlider setMinimumValue:min];
+    [totalSlider setMaximumValue:max];
 }
 
 -(void)setValue:(int)val {
-    value = val;
-    [self widgetsValues];
-}
+    [totalStepper setValue:val];
+    [totalSlider setValue:val];
 
--(void)widgetsValues {
-    [deciTotalLabel setText:[NSString stringWithFormat:@"%d", value]];
-    [hexaTotalLabel setText:[NSString stringWithFormat:@"%x", value]];
-    if(value == 42){
-        [deciTotalLabel setTextColor:[UIColor redColor]];
-        [hexaTotalLabel setTextColor:[UIColor greenColor]];
+    [deciTotalLabel setText:[NSString stringWithFormat:@"%d", val]];
+    [hexaTotalLabel setText:[NSString stringWithFormat:@"%x", val]];
+    
+    if(val == 42){
+        [deciTotalLabel setBackgroundColor:lightColor];
+        [hexaTotalLabel setBackgroundColor:lightColor];
     } else {
-        [deciTotalLabel setTextColor:[UIColor blueColor]];
-        [hexaTotalLabel setTextColor:[UIColor purpleColor]];
+        [deciTotalLabel setBackgroundColor:[UIColor clearColor]];
+        [hexaTotalLabel setBackgroundColor:[UIColor clearColor]];
     }
-    
-    [deci1SegBlock setSegmentIndex: value % 10];
-    [deci2SegBlock setSegmentIndex: value / 10];
-    [hexa1SegBlock setSegmentIndex: value % 16];
-    [hexa2SegBlock setSegmentIndex: value / 16];
-    
-    [totalStepper setValue:value];
-    [totalSlider setValue:value animated:YES];
-    
-    [self setNeedsDisplay];
-}
 
+    [deci2SegBlock setSegmentIndex:val / 10];
+    [deci1SegBlock setSegmentIndex:val % 10];
+    [hexa2SegBlock setSegmentIndex:val / 16];
+    [hexa1SegBlock setSegmentIndex:val % 16];
+    
+    [UIView animateWithDuration:0.4f animations:^{[self layoutIfNeeded];}];
+}
+/* ---------- END VALUES ---------- */
+
+
+
+/* ---------- DRAW INTERFACE ---------- */
 -(void) drawWithOrientation:(UIInterfaceOrientation)orientation {
     
-    BOOL isGeek = geekSwitch.on;
-    BOOL isLandscape = (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight);
-
+    isLandscape = (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight);
+    
+    isGeek = geekSwitch.on;
+    
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    
     if(isLandscape){
-        [container setFrame:CGRectMake([self bounds].origin.x + margin,
-                                       [self bounds].origin.y + margin,
-                                       [self bounds].size.height - 2 * margin,
-                                       [self bounds].size.width - 2 * margin)];
-        
+        [self setFrame:CGRectMake(0, 0, screenBounds.size.height, screenBounds.size.width)];
     } else {
-        [container setFrame:CGRectMake([self bounds].origin.x + margin,
-                                       [self bounds].origin.y + margin,
-                                       [self bounds].size.width - 2 * margin,
-                                       [self bounds].size.height - 2 * margin)];
-        
+        [self setFrame:CGRectMake(0, 0, screenBounds.size.width, screenBounds.size.height)];
     }
     
-    int gap = [container bounds].size.height / 30;
-    int lineHeight = [container bounds].size.height / 15;
+    int margin = (isIpad)? 60 : 20;
+    [self setBounds:CGRectMake(margin, margin,
+                               [self frame].size.width - 2 * margin,
+                               [self frame].size.height - 2 * margin)];
     
-    //top stick elements
-    [totalStepper setFrame:CGRectMake(0,
-                                      0,
-                                      [totalStepper bounds].size.width,
-                                      [totalStepper bounds].size.height)];
-    int test = (isLandscape)? 200 : 0;
-    [geekSwitch setFrame:CGRectMake([container bounds].size.width - [geekSwitch bounds].size.width - test,
-                                    0,
-                                    [geekSwitch bounds].size.width,
-                                    [geekSwitch bounds].size.height)];
-    [geekLabel setFrame:CGRectMake([totalStepper frame].origin.x + [totalStepper frame].size.width + gap,
-                                   0,
-                                   [container bounds].size.width - [geekSwitch frame].size.width - [totalStepper frame].size.width - 2 * gap,
-                                   [geekSwitch bounds].size.height)];
-    
-    [deci2SegBlock setFrame:CGRectMake(0,
-                                       [geekSwitch frame].origin.y + [geekSwitch frame].size.height + gap,
-                                       [container bounds].size.width, 2*lineHeight)];
-    [deci1SegBlock setFrame:CGRectMake(0,
-                                       [deci2SegBlock frame].origin.y + [deci2SegBlock frame].size.height + gap,
-                                       [container bounds].size.width, 2*lineHeight)];
-    if(isGeek){
-        [hexa2SegBlock setHidden:NO];
-        [hexa1SegBlock setHidden:NO];
-        [hexa2SegBlock setFrame:CGRectMake(0,
-                                       [deci1SegBlock frame].origin.y + [deci1SegBlock frame].size.height + gap,
-                                       [container bounds].size.width,
-                                       2*lineHeight)];
-        [hexa1SegBlock setFrame:CGRectMake(0,
-                                       [hexa2SegBlock frame].origin.y + [hexa2SegBlock frame].size.height + gap,
-                                       [container bounds].size.width,
-                                       2*lineHeight)];
-    } else {
-        [hexa2SegBlock setHidden:YES];
-        [hexa1SegBlock setHidden:YES];
-        [hexa1SegBlock setFrame:CGRectMake(0, 0, 0, 0)];
-        [hexa2SegBlock setFrame:CGRectMake(0, 0, 0, 0)];
-    }
+    /* ----- flex constraints ----- */
+    [self removeConstraints:flexConstraints];
 
+    [flexConstraints removeAllObjects];
+
+    //total block
+    [flexConstraints addObjectsFromArray:[self constraintsFlexForTotalBlocks]];
     
-    //bottom stick elements
-    [resetButton setFrame:CGRectMake([container bounds].size.width / 4,
-                                     [container bounds].size.height - 30,
-                                     [container bounds].size.width / 2,
-                                     lineHeight)];
-    [totalSlider setFrame:CGRectMake(0,
-                                     [resetButton frame].origin.y - lineHeight - gap,
-                                     [container bounds].size.width,
-                                     lineHeight)];
+    //segments
+    [flexConstraints addObjectsFromArray:[self constraintsFlexForSegments]];
     
-    if(isGeek){
-        [hexaTotalLabel setHidden:NO];
-        [hexaTotalLabel setFrame:CGRectMake([container bounds].size.width / 2,
-                                        [totalSlider frame].origin.y - lineHeight - gap,
-                                        [container bounds].size.width / 2,
-                                        lineHeight)];
-        [deciTotalLabel setFrame:CGRectMake(0,
-                                        [totalSlider frame].origin.y - lineHeight - gap,
-                                        [container bounds].size.width / 2,
-                                        lineHeight)];
-    } else {
-        [hexaTotalLabel setHidden:YES];
-        [hexaTotalLabel setFrame:CGRectMake(0, 0, 0, 0)];
-        [deciTotalLabel setFrame:CGRectMake(0,
-                                            [totalSlider frame].origin.y - lineHeight - gap,
-                                            [container bounds].size.width,
-                                            lineHeight)];
-    }
+    [self addConstraints:flexConstraints];
+    /* ----- end flex constraints ----- */
+    
+    [UIView animateWithDuration:0.8f animations:^{[self layoutIfNeeded];}];
     
 }
+
+
+
+
+
+/* ---------- SETUP CONSTRAINTS -------- */
+-(NSArray*) constraintsFixForTotalStepper {
+    return [STPLayoutConstraintBuilder
+            insideTopLeftfor:totalStepper inside:self padding:0];
+}
+
+-(NSArray*) constraintsFixForGeekBlock {
+    return [NSArray arrayWithObjects:
+            [STPLayoutConstraintBuilder fixTop:geekSwitch
+                                         toTop:self withConstant:0],
+            [STPLayoutConstraintBuilder fixRight:geekSwitch
+                                         toRight:self withConstant:0],
+            [STPLayoutConstraintBuilder fixCenterY:geekLabel
+                                         toCenterY:geekSwitch withConstant:0],
+            [STPLayoutConstraintBuilder fixRight:geekLabel
+                                          toLeft:geekSwitch withConstant:-gap],
+            nil];
+}
+
+-(NSArray*) constraintsFixForResetButton {
+    NSMutableArray *c = [[NSMutableArray alloc]
+                         initWithArray:[STPLayoutConstraintBuilder
+                                        insideLeftRightBorders:resetButton inside:self padding:0]];
+    [c addObject:[STPLayoutConstraintBuilder fixBottom:resetButton toBottom:self withConstant:0]];
+    return [c autorelease];
+}
+
+-(NSArray*) constraintsFixForTotalSlider {
+    NSMutableArray *c = [[NSMutableArray alloc]
+                         initWithArray:[STPLayoutConstraintBuilder
+                                        insideLeftRightBorders:totalSlider inside:self padding:0]];
+    [c addObject:[STPLayoutConstraintBuilder fixBottom:totalSlider
+                                                 toTop:resetButton withConstant:-gap]];
+    return [c autorelease];
+}
+
+-(NSArray*) constraintsFlexForTotalBlocks {
+    NSMutableArray *c = [[NSMutableArray alloc]init];
+    
+    if(!isIpad && !isLandscape){
+        //w hexa full
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:hexaTotalLabel inside:self padding:0]];
+        //v hexa
+        [c addObject:[STPLayoutConstraintBuilder fixBottom:hexaTotalLabel
+                                                     toTop:totalSlider withConstant:-gap]];
+        //w deci full
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:deciTotalLabel inside:self padding:0]];
+        //v deci
+        [c addObject:[STPLayoutConstraintBuilder fixBottom:deciTotalLabel
+                                                     toTop:hexaTotalLabel withConstant:-gap]];
+    } else {
+        //v deci
+        [c addObject:[STPLayoutConstraintBuilder fixBottom:deciTotalLabel
+                                                     toTop:totalSlider withConstant:-gap]];
+        if(isGeek){
+            //v hexa = v deci
+            [c addObject:[STPLayoutConstraintBuilder fixBottom:hexaTotalLabel
+                                                      toBottom:deciTotalLabel withConstant:0]];
+            //deci to left
+            [c addObject:[STPLayoutConstraintBuilder fixLeft:deciTotalLabel
+                                                      toLeft:self withConstant:0]];
+            //hexa to right
+            [c addObject:[STPLayoutConstraintBuilder fixRight:hexaTotalLabel
+                                                      toRight:self withConstant:0]];
+            //deci right -> hexa left
+            [c addObject:[STPLayoutConstraintBuilder fixRight:deciTotalLabel
+                                                       toLeft:hexaTotalLabel withConstant:-gap]];
+            
+            //w hexa = 1.6 * v deci = full  [--][----]
+            [c addObject:[NSLayoutConstraint
+                          constraintWithItem:hexaTotalLabel attribute:NSLayoutAttributeWidth
+                          relatedBy:NSLayoutRelationEqual
+                          toItem:deciTotalLabel attribute:NSLayoutAttributeWidth
+                          multiplier:1.6 constant:0]];
+        } else {
+            //w deci full
+            [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                    insideLeftRightBorders:deciTotalLabel inside:self padding:0]];
+        }
+    }
+    
+    [hexaTotalLabel setHidden:(!isGeek)];
+
+    return [c autorelease];
+}
+
+
+-(NSArray*) constraintsFixForSegments {
+    return [NSArray arrayWithObjects:
+            //left & right deci1 = left & right deci 2
+            [STPLayoutConstraintBuilder fixLeft:deci1SegBlock
+                                         toLeft:deci2SegBlock withConstant:0],
+            [STPLayoutConstraintBuilder fixRight:deci1SegBlock
+                                         toRight:deci2SegBlock withConstant:0],
+            //left & right hexa 1 = left & right hexa 2
+            [STPLayoutConstraintBuilder fixLeft:hexa1SegBlock
+                                         toLeft:hexa2SegBlock withConstant:0],
+            [STPLayoutConstraintBuilder fixRight:hexa1SegBlock
+                                         toRight:hexa2SegBlock withConstant:0],
+            //top deci2
+            [STPLayoutConstraintBuilder fixTop:deci2SegBlock
+                                      toBottom:totalStepper withConstant:gap],
+            //top deci1 -> bottom deci2
+            [STPLayoutConstraintBuilder fixTop:deci1SegBlock
+                                      toBottom:deci2SegBlock withConstant:gap],
+            //top hexa1 -> bottom hexa2
+            [STPLayoutConstraintBuilder fixTop:hexa1SegBlock
+                                      toBottom:hexa2SegBlock withConstant:gap],
+            nil];
+}
+-(NSArray*) constraintsFlexForSegments {
+    
+    int blockHeight = (isIpad)? 80 : 60;
+    
+    //height of segmentBlocks (constraint in subview)
+    [deci1SegBlock setMinHeight:blockHeight];
+    [deci2SegBlock setMinHeight:blockHeight];
+    [hexa1SegBlock setMinHeight:blockHeight];
+    [hexa2SegBlock setMinHeight:blockHeight];
+    
+    NSMutableArray *c = [[NSMutableArray alloc]init];
+    
+
+    if(!isIpad && !isLandscape){
+        //top hexa2 -> bottom deci1
+        [c addObject:[STPLayoutConstraintBuilder fixTop:hexa2SegBlock
+                                               toBottom:deci1SegBlock withConstant:gap]];
+        //left right full
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:deci2SegBlock inside:self padding:0]];
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:hexa2SegBlock inside:self padding:0]];
+    } else {
+        //top hexa2 -> top deci2
+        [c addObject:[STPLayoutConstraintBuilder fixTop:hexa2SegBlock
+                                                  toTop:deci2SegBlock withConstant:0]];
+        //left right deci2 -> left right decitotal
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:deci2SegBlock
+                                inside:deciTotalLabel padding:0]];
+        //left right hexa2 -> left right hexatotal
+        [c addObjectsFromArray:[STPLayoutConstraintBuilder
+                                insideLeftRightBorders:hexa2SegBlock
+                                inside:hexaTotalLabel padding:0]];
+    }
+    
+    [hexa2SegBlock setHidden:(!isGeek)];
+    [hexa1SegBlock setHidden:(!isGeek)];
+    
+    return [c autorelease];
+}
+
+
+
+
+
+
+
+
 
 /* ----------------- ACTIONS --------------------- */
 - (void)deciSegmentAction{
@@ -293,5 +508,27 @@
     [[self controller] controlTotal:0];
 }
 
+
+
+
+-(void)dealloc {
+    [_controller release];
+    [deciColor release];
+    [hexaColor release];
+    [lightColor release];
+    [totalStepper release];
+    [geekSwitch release];
+    [deci1SegBlock release];
+    [deci2SegBlock release];
+    [hexa1SegBlock release];
+    [hexa2SegBlock release];
+    [totalSlider release];
+    [geekLabel release];
+    [deciTotalLabel release];
+    [hexaTotalLabel release];
+    [resetButton release];
+    [flexConstraints release];
+    [super dealloc];
+}
 
 @end
