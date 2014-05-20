@@ -485,19 +485,23 @@
 
 /* ----------------- ACTIONS --------------------- */
 - (void)deciSegmentAction{
-    [[self controller] controlTotal: [deci2SegBlock segmentIndex] * 10 + [deci1SegBlock segmentIndex] ];
+    [[self controller]
+        controlTotal: [deci2SegBlock segmentIndex] * 10 + [deci1SegBlock segmentIndex] ];
 }
 
 - (void)hexaSegmentAction{
-    [[self controller] controlTotal: [hexa2SegBlock segmentIndex] * 16 + [hexa1SegBlock segmentIndex] ];
+    [[self controller]
+        controlTotal: [hexa2SegBlock segmentIndex] * 16 + [hexa1SegBlock segmentIndex] ];
 }
 
 - (void)stepperAction{
-    [[self controller] controlTotal:(int)[totalStepper value]];
+    [[self controller]
+        controlTotal:(int)[totalStepper value]];
 }
 
 - (void)sliderAction{
-    [[self controller] controlTotal:(int)[totalSlider value]];
+    [[self controller]
+        controlTotal:(int)[totalSlider value]];
 }
 
 - (void)switchGeek{
