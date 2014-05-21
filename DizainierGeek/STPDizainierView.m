@@ -258,7 +258,7 @@
     [totalSlider setValue:val];
 
     [deciTotalLabel setText:[NSString stringWithFormat:@"%d", val]];
-    [hexaTotalLabel setText:[NSString stringWithFormat:@"%x", val]];
+    [hexaTotalLabel setText:[NSString stringWithFormat:@"%X", val]];
     
     if(val == 42){
         [deciTotalLabel setBackgroundColor:lightColor];
@@ -363,13 +363,13 @@
     if(!isIpad && !isLandscape){
         //w hexa full
         [c addObjectsFromArray:[STPLayoutConstraintBuilder
-                                insideLeftRightBorders:hexaTotalLabel inside:self padding:0]];
+                                insideLeftRightBorders:hexaTotalLabel inside:deciTotalLabel padding:0]];
         //v hexa
         [c addObject:[STPLayoutConstraintBuilder fixBottom:hexaTotalLabel
                                                      toTop:totalSlider withConstant:-gap]];
         //w deci full
         [c addObjectsFromArray:[STPLayoutConstraintBuilder
-                                insideLeftRightBorders:deciTotalLabel inside:self padding:0]];
+                                insideLeftRightBorders:deciTotalLabel inside:resetButton padding:0]];
         //v deci
         [c addObject:[STPLayoutConstraintBuilder fixBottom:deciTotalLabel
                                                      toTop:hexaTotalLabel withConstant:-gap]];
@@ -383,10 +383,10 @@
                                                       toBottom:deciTotalLabel withConstant:0]];
             //deci to left
             [c addObject:[STPLayoutConstraintBuilder fixLeft:deciTotalLabel
-                                                      toLeft:self withConstant:0]];
+                                                      toLeft:resetButton withConstant:0]];
             //hexa to right
             [c addObject:[STPLayoutConstraintBuilder fixRight:hexaTotalLabel
-                                                      toRight:self withConstant:0]];
+                                                      toRight:resetButton withConstant:0]];
             //deci right -> hexa left
             [c addObject:[STPLayoutConstraintBuilder fixRight:deciTotalLabel
                                                        toLeft:hexaTotalLabel withConstant:-gap]];
@@ -400,7 +400,7 @@
         } else {
             //w deci full
             [c addObjectsFromArray:[STPLayoutConstraintBuilder
-                                    insideLeftRightBorders:deciTotalLabel inside:self padding:0]];
+                                    insideLeftRightBorders:deciTotalLabel inside:resetButton padding:0]];
         }
     }
     
@@ -452,9 +452,9 @@
                                                toBottom:deci1SegBlock withConstant:gap]];
         //left right full
         [c addObjectsFromArray:[STPLayoutConstraintBuilder
-                                insideLeftRightBorders:deci2SegBlock inside:self padding:0]];
+                                insideLeftRightBorders:deci2SegBlock inside:resetButton padding:0]];
         [c addObjectsFromArray:[STPLayoutConstraintBuilder
-                                insideLeftRightBorders:hexa2SegBlock inside:self padding:0]];
+                                insideLeftRightBorders:hexa2SegBlock inside:deci2SegBlock padding:0]];
     } else {
         //top hexa2 -> top deci2
         [c addObject:[STPLayoutConstraintBuilder fixTop:hexa2SegBlock

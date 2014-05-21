@@ -16,6 +16,6 @@
 - (void)addTarget:(id)target action:(SEL)action;
 -(NSInteger)segmentIndex;
 -(void)setSegmentIndex:(NSInteger)index;
--(void)setMinHeight:(int)minHeight;
+-(void)setMinHeight:(int)height;
 
 @end

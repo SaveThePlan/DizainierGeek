@@ -13,6 +13,8 @@
     UILabel *titleLabel;
     UISegmentedControl *valueSegment;
     NSLayoutConstraint *heightConstraint;
+    
+    int minHeight;
 }
 
 @end
@@ -22,6 +24,7 @@
 - (id)initWithItems:(NSArray *)items {
     self = [super init];
     if(self){
+        minHeight = 50;
         
         titleLabel = [[UILabel alloc] init];
         [titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -36,23 +39,40 @@
         
         //add fix constraints
         
+        //title top
         [self addConstraint:[STPLayoutConstraintBuilder
                              fixTop:titleLabel
                              toTop:self
                              withConstant:0]];
+        //title center x
         [self addConstraint:[STPLayoutConstraintBuilder
                              fixCenterX:titleLabel
                              toCenterX:self
                              withConstant:0]];
-        
+        //segment bottom
         [self addConstraint:[STPLayoutConstraintBuilder
                              fixBottom:valueSegment
                              toBottom:self
                              withConstant:0]];
+        //segment center x
         [self addConstraint:[STPLayoutConstraintBuilder
                              fixCenterX:valueSegment
                              toCenterX:self
                              withConstant:0]];
+        
+        //title inside container (x)
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:titleLabel attribute:NSLayoutAttributeLeft
+                             relatedBy:NSLayoutRelationGreaterThanOrEqual
+                             toItem:self attribute:NSLayoutAttributeLeft
+                             multiplier:1 constant:0]];
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:titleLabel attribute:NSLayoutAttributeRight
+                             relatedBy:NSLayoutRelationLessThanOrEqual
+                             toItem:self attribute:NSLayoutAttributeRight
+                             multiplier:1 constant:0]];
+        
+        //segment inside container (x)
         [self addConstraint:[NSLayoutConstraint
                              constraintWithItem:valueSegment attribute:NSLayoutAttributeLeft
                              relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -64,12 +84,8 @@
                              toItem:self attribute:NSLayoutAttributeRight
                              multiplier:1 constant:0]];
         
-        heightConstraint = [NSLayoutConstraint
-                            constraintWithItem:self attribute:NSLayoutAttributeHeight
-                            relatedBy:NSLayoutRelationGreaterThanOrEqual
-                            toItem:nil attribute:NSLayoutAttributeNotAnAttribute
-                            multiplier:1 constant:50];
-        [self addConstraint:heightConstraint];
+        //container min height
+        [self setMinHeight:minHeight];
 
         
     }
@@ -97,15 +113,15 @@
     [valueSegment setTintColor:color];
 }
 
--(void)setMinHeight:(int)minHeight{
-    if(minHeight > 50){
+-(void)setMinHeight:(int)height{
+    if(height >= minHeight){
         [self removeConstraint:heightConstraint];
         heightConstraint = [NSLayoutConstraint
                             constraintWithItem:self attribute:NSLayoutAttributeHeight
                             relatedBy:NSLayoutRelationGreaterThanOrEqual
                             toItem:nil attribute:NSLayoutAttributeNotAnAttribute
                             multiplier:1
-                            constant:minHeight];
+                            constant:height];
         [self addConstraint:heightConstraint];
     }
 }
