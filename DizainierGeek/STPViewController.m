@@ -62,7 +62,7 @@
 
 
 -(void)dealloc {
-    [mainView release];
+    [mainView release]; mainView = nil;
     [super dealloc];
 }
 

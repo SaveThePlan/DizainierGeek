@@ -516,22 +516,22 @@
 
 
 -(void)dealloc {
-    [_controller release];
-    [deciColor release];
-    [hexaColor release];
-    [lightColor release];
-    [totalStepper release];
-    [geekSwitch release];
-    [deci1SegBlock release];
-    [deci2SegBlock release];
-    [hexa1SegBlock release];
-    [hexa2SegBlock release];
-    [totalSlider release];
-    [geekLabel release];
-    [deciTotalLabel release];
-    [hexaTotalLabel release];
-    [resetButton release];
-    [flexConstraints release];
+    [_controller release]; _controller = nil;
+    [deciColor release]; deciColor = nil;
+    [hexaColor release]; hexaColor = nil;
+    [lightColor release];lightColor = nil;
+    [totalStepper release];totalStepper = nil;
+    [geekSwitch release];geekSwitch = nil;
+    [deci1SegBlock release];deci1SegBlock = nil;
+    [deci2SegBlock release];deci2SegBlock = nil;
+    [hexa1SegBlock release];hexa1SegBlock = nil;
+    [hexa2SegBlock release];hexa2SegBlock = nil;
+    [totalSlider release];totalSlider = nil;
+    [geekLabel release];geekLabel = nil;
+    [deciTotalLabel release];deciTotalLabel = nil;
+    [hexaTotalLabel release];hexaTotalLabel = nil;
+    [resetButton release];resetButton = nil;
+    [flexConstraints release];flexConstraints = nil;
     [super dealloc];
 }
 

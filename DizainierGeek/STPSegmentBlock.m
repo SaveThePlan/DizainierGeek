@@ -127,9 +127,9 @@
 }
 
 -(void)dealloc{
-    [titleLabel release];
-    [valueSegment release];
-    [heightConstraint release];
+    [titleLabel release]; titleLabel = nil;
+    [valueSegment release]; valueSegment = nil;
+    [heightConstraint release]; heightConstraint = nil;
     [super dealloc];
 }
 
